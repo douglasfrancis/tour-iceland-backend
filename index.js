@@ -20,6 +20,7 @@ const Request = require('./Models/RequestSchema')
 
 //Emails
 const emailWelcome = require('./Sendgrid/Welcome')
+const emailNewRequest = require('./Sendgrid/NewRequest')
 
 app.get('/', async (req, res)=>{
    res.send("Welcome to Tour Iceland")
@@ -30,6 +31,16 @@ app.get('/', async (req, res)=>{
     try {
       let guides = await Guide.find()
       res.send(guides)
+    } catch (error) {
+      res.status(400).send(error)
+    }
+  })
+
+  app.post('/get-guide-by-id', async (req, res)=>{
+    try {
+      let {id} = req.body
+      let guide = await Guide.findById(id)
+      res.send(guide)
     } catch (error) {
       res.status(400).send(error)
     }
@@ -69,8 +80,12 @@ app.get('/', async (req, res)=>{
   //Requests
   app.post('/create-new-request', async (req, res)=>{
     try {
+      let {date, info} = req.body;
       let newRequest = new Request(req.body)
       await newRequest.save()
+      //Email guides
+      let guides = await Guide.find()
+      guides.map((guide)=> emailNewRequest(guide.email, date, info))
       res.send("Created Successfully")
     } catch (error) {
       res.status(400).send(error)
