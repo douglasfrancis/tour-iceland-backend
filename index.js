@@ -18,6 +18,9 @@ const Guide = require('./Models/GuideSchema')
 const Booking = require('./Models/BookingSchema')
 const Request = require('./Models/RequestSchema')
 
+//Emails
+const emailWelcome = require('./Sendgrid/Welcome')
+
 app.get('/', async (req, res)=>{
    res.send("Welcome to Tour Iceland")
    
@@ -36,6 +39,7 @@ app.get('/', async (req, res)=>{
     try {
       let newGuide = new Guide(req.body)
       await newGuide.save()
+      emailWelcome(req.body.email, req.body.firstName)
       res.send("Created Successfully")
     } catch (error) {
       res.status(400).send(error)
