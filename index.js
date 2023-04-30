@@ -101,6 +101,16 @@ app.get('/', async (req, res)=>{
     }
   })
 
+  app.post('/get-request-by-id', async (req, res)=>{
+    try {
+      let {id} = req.body;
+      let request = await Request.findById(id)
+      res.send(request)
+    } catch (error) {
+      res.status(400).send(error)
+    }
+  })
+
 
 
 async function main() {
