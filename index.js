@@ -17,6 +17,8 @@ app.use(helmet());
 const Guide = require('./Models/GuideSchema')
 const Booking = require('./Models/BookingSchema')
 const Request = require('./Models/RequestSchema')
+const Chat = require('./Models/ChatSchema')
+const Message = require('./Models/MessageSchema')
 
 //Emails
 const emailWelcome = require('./Sendgrid/Welcome')
@@ -117,6 +119,58 @@ app.get('/', async (req, res)=>{
       res.status(400).send(error)
     }
   })
+
+  app.post('/send-initial-quote', async (req, res)=>{
+    try {
+      let {guideId, guideName, guideEmail,net, vat, msg, clientEmail, clientName, requestId} = req.body;
+      //Create inbox between guide and client
+      let chat = new Chat({guideId, guideName, guideEmail, clientName, clientEmail, requestId, lastMsgAdded: new Date()})
+      chat.save().then(async (doc)=>{
+        //Add initial msg and quote to inbox
+        let message = new Message({chatId: doc._id, message: `Quote - kr${Math.round((net*vat)*1.125)}. ${msg}`, guideId, read: true, timeStamp: new Date(), sentBy: 'Guide'})
+        await message.save()
+        //Email client with quote and link to respond
+        res.send('Successfully created')
+      }).catch((e)=>{
+        console.log(e)
+        res.status(400).send(e)
+      })
+    } catch (error) {
+      res.status(400).send(error)
+    }
+  })
+
+//Chats
+app.post('/get-chats-by-id', async (req, res)=>{
+  try {
+    let {id} = req.body;
+    let chats = await Chat.find({guideId:id})
+    res.send(chats)
+  } catch (error) {
+    res.status(400).send(error)
+  }
+})
+
+//Messages
+app.post('/get-unread-msgs', async (req, res)=>{
+  try {
+    let {id} = req.body;
+    let unread = await Message.find({$and: [{guideId:id}, {read: false}]})
+    res.send(unread)
+  } catch (error) {
+    res.status(400).send(error)
+  }
+})
+
+app.post('/get-messages-by-chat-id', async (req, res)=>{
+  try {
+    let {chatId} = req.body;
+    let msgs = await Message.find({chatId})
+    res.send(msgs)
+  } catch (error) {
+    res.status(400).send(error)
+  }
+})
 
 
 
