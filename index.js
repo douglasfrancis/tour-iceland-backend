@@ -82,10 +82,17 @@ app.get('/', async (req, res)=>{
     try {
       let {date, info} = req.body;
       let newRequest = new Request(req.body)
-      await newRequest.save()
-      //Email guides
+      //return all guides to email
       let guides = await Guide.find()
-      guides.map((guide)=> emailNewRequest(guide.email, date, info))
+
+      newRequest.save().then((doc)=>{
+      //Email guides
+        //guides.map((guide)=> emailNewRequest(guide.email, date, info))
+        emailNewRequest('dougiefrancis@gmail.com', date, info, doc._id)
+      }).catch((e)=>console.log(e))
+       
+   
+      
       res.send("Created Successfully")
     } catch (error) {
       res.status(400).send(error)

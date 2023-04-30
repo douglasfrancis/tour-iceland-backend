@@ -7,6 +7,7 @@ const requestSchema = new mongoose.Schema({
     email: String,
     info: Object,
     notes: String,
+    currency: String,
     backgroundColor: String,
     borderColor: String,
     textColor: String

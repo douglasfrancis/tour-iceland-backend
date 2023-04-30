@@ -1,7 +1,7 @@
 const sgMail = require('@sendgrid/mail')
 require('dotenv').config()
 
-const emailNewRequest = (email, date, info) => {
+const emailNewRequest = (email, date, info, requestId) => {
 
   sgMail.setApiKey(process.env.SENDGRID_API_KEY)
   const msg = {
@@ -196,6 +196,9 @@ const emailNewRequest = (email, date, info) => {
                            <table cellpadding="0" cellspacing="0" width="100%" role="presentation" style="mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px">
                              <tr>
                               <td align="left" class="es-m-txt-l" style="padding:0;Margin:0;padding-bottom:5px"><h3 style="Margin:0;line-height:24px;mso-line-height-rule:exactly;font-family:arial, 'helvetica neue', helvetica, sans-serif;font-size:20px;font-style:normal;font-weight:bold;color:#333333">${info.groupSize}</h3></td>
+                             </tr>
+                             <tr>
+                              <td align="center" class="es-m-txt-l" style="padding:30px;Margin:0px;padding-bottom:5px"><a href="https://tour-iceland.netlify.app/guides/requests/${requestId}"><button style="background-color: #8FBCBB;padding:15px;color:#fff;border: unset;font-weight:bold">View Request</button></a></td>
                              </tr>
                            </table></td>
                          </tr>
