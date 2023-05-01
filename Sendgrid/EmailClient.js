@@ -1,4 +1,18 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+const sgMail = require('@sendgrid/mail')
+require('dotenv').config()
+
+const emailClientFromInbox = (email, chatId) => {
+
+  sgMail.setApiKey(process.env.SENDGRID_API_KEY)
+  const msg = {
+    to: email, // Change to your recipient
+    from: {
+      email: 'tour-iceland@frantech.org.uk',
+      name: 'Tour Iceland'
+    },
+    subject: 'Tour Iceland | New Message!',
+    text: "Hello, you have a new message. Please enable HTML.",
+    html: `<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
     <html xmlns="http://www.w3.org/1999/xhtml" xmlns:o="urn:schemas-microsoft-com:office:office" style="font-family:arial, 'helvetica neue', helvetica, sans-serif">
      <head>
       <meta charset="UTF-8">
@@ -197,4 +211,17 @@
        </table>
       </div>
      </body>
-    </html>
+    </html>`
+  }
+  sgMail
+    .send(msg)
+    .then(() => {
+      console.log('Email sent')
+    })
+    .catch((error) => {
+      console.error(error)
+    })
+
+}
+
+module.exports = emailClientFromInbox;

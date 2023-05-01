@@ -23,6 +23,7 @@ const Message = require('./Models/MessageSchema')
 //Emails
 const emailWelcome = require('./Sendgrid/Welcome')
 const emailNewRequest = require('./Sendgrid/NewRequest')
+const emailClientFromInbox = require('./Sendgrid/EmailClient')
 
 app.get('/', async (req, res)=>{
    res.send("Welcome to Tour Iceland")
@@ -130,6 +131,7 @@ app.get('/', async (req, res)=>{
         let message = new Message({chatId: doc._id, message: `Quote - kr${Math.round((net*vat)*1.125)}. ${msg}`, guideId, read: true, timeStamp: new Date(), sentBy: 'Guide'})
         await message.save()
         //Email client with quote and link to respond
+        emailClientFromInbox(clientEmail, doc._id)
         res.send('Successfully created')
       }).catch((e)=>{
         console.log(e)
@@ -151,6 +153,15 @@ app.post('/get-chats-by-id', async (req, res)=>{
   }
 })
 
+app.post('/get-chat-by-id', async (req, res)=>{
+  try {
+    let chat = await Chat.findById(req.body.chatId)
+    res.send(chat)
+  } catch (error) {
+    res.status(400).send(error)
+  }
+})
+
 //Messages
 app.post('/get-unread-msgs', async (req, res)=>{
   try {
@@ -167,6 +178,40 @@ app.post('/get-messages-by-chat-id', async (req, res)=>{
     let {chatId} = req.body;
     let msgs = await Message.find({chatId})
     res.send(msgs)
+  } catch (error) {
+    res.status(400).send(error)
+  }
+})
+
+app.post('/send-guide-message', async (req, res)=>{
+  try {
+    let msg = new Message(req.body)
+    await msg.save()
+
+    //Email client to notify of new msg
+    emailClientFromInbox(req.body.clientEmail, req.body.chatId)
+
+    //Update Chat last message received
+    await Chat.findByIdAndUpdate(req.body.chatId, {lastMsgAdded: new Date()})
+
+    res.send("Message sent")
+  } catch (error) {
+    res.status(400).send(error)
+  }
+})
+
+app.post('/send-client-message', async (req, res)=>{
+  try {
+    let msg = new Message(req.body)
+    await msg.save()
+
+    //Email guide to notify of new msg
+    //emailClientFromInbox(req.body.clientEmail, req.body.chatId)
+
+    //Update Chat last message received
+    await Chat.findByIdAndUpdate(req.body.chatId, {lastMsgAdded: new Date()})
+
+    res.send("Message sent")
   } catch (error) {
     res.status(400).send(error)
   }
