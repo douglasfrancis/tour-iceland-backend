@@ -59,6 +59,16 @@ app.get('/', async (req, res)=>{
       res.status(400).send(error)
     }
   })
+
+  app.post('/update-guide-personal', async (req, res)=>{
+    try {
+      let {id, firstName, lastName, number, img} = req.body
+      await Guide.findByIdAndUpdate(id, {firstName, lastName, number, img})
+      res.send("Updated Successfully")
+    } catch (error) {
+      res.status(400).send(error)
+    }
+  })
   //Bookings
   app.post('/create-new-booking', async (req, res)=>{
     try {
