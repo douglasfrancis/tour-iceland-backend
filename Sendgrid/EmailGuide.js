@@ -1,7 +1,15 @@
 const sgMail = require('@sendgrid/mail')
 require('dotenv').config()
 
-const emailClientFromInbox = (email, chatId) => {
+// COPIED THIS FROM EmailClient so we can get a different path in the email as picked up by app.js
+// seems a huge overkill, would be good to just have that uri conditionally set
+// unless there might be other differences later
+// note that guide chat starts with send initial quote and at that point it did use chat.js rather than clientchat.js
+
+const emailGuideFromInbox = (email, chatId) => {
+console.log("emailguideFromInbox");
+console.log(email);
+console.log(chatId)
   sgMail.setApiKey(process.env.SENDGRID_API_KEY)
   const msg = {
     to: email, // recipient email
@@ -151,7 +159,7 @@ const emailClientFromInbox = (email, chatId) => {
                            <table cellpadding="0" cellspacing="0" width="100%" role="presentation" style="mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px">
                             
                              <tr>
-                               <td align="center" class="es-m-txt-l" style="padding:30px;Margin:0px;padding-bottom:20px"><a href="${process.env.APP_URL}/public/inbox/client/${chatId}"><button style="background-color: #8FBCBB;padding:15px;color:#fff;border: unset;font-weight:bold">View Message</button></a></td>
+                              <td align="center" class="es-m-txt-l" style="padding:30px;Margin:0px;padding-bottom:20px"><a href="${process.env.APP_URL}/public/inbox/guide/${chatId}"><button style="background-color: #8FBCBB;padding:15px;color:#fff;border: unset;font-weight:bold">View Message</button></a></td>
                              </tr>
                            </table></td>
                          </tr>
@@ -222,4 +230,4 @@ const emailClientFromInbox = (email, chatId) => {
     })
 }
 
-module.exports = emailClientFromInbox;
+module.exports = emailGuideFromInbox;
