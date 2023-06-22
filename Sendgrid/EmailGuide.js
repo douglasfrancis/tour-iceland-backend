@@ -1,11 +1,6 @@
 const sgMail = require('@sendgrid/mail')
 require('dotenv').config()
 
-// COPIED THIS FROM EmailClient so we can get a different path in the email as picked up by app.js
-// seems a huge overkill, would be good to just have that uri conditionally set
-// unless there might be other differences later
-// note that guide chat starts with send initial quote and at that point it did use chat.js rather than clientchat.js
-
 const emailGuideFromInbox = (email, chatId) => {
 console.log("emailguideFromInbox");
 console.log(email);
