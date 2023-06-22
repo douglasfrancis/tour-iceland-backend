@@ -2,10 +2,8 @@ const sgMail = require('@sendgrid/mail')
 require('dotenv').config()
 
 const emailGuideFromInbox = (email, chatId) => {
-console.log("emailguideFromInbox");
-console.log(email);
-console.log(chatId)
   sgMail.setApiKey(process.env.SENDGRID_API_KEY)
+  
   const msg = {
     to: email, // recipient email
     from: { // sendgrid acts on behalf of app's domain
