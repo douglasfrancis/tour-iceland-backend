@@ -1,8 +1,9 @@
 const sgMail = require('@sendgrid/mail')
 require('dotenv').config()
 
-const emailClientFromInbox = (email, chatId) => {
+const emailGuideFromInbox = (email, chatId) => {
   sgMail.setApiKey(process.env.SENDGRID_API_KEY)
+  
   const msg = {
     to: email, // recipient email
     from: { // sendgrid acts on behalf of app's domain
@@ -151,7 +152,7 @@ const emailClientFromInbox = (email, chatId) => {
                            <table cellpadding="0" cellspacing="0" width="100%" role="presentation" style="mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px">
                             
                              <tr>
-                               <td align="center" class="es-m-txt-l" style="padding:30px;Margin:0px;padding-bottom:20px"><a href="${process.env.APP_URL}/public/inbox/client/${chatId}"><button style="background-color: #8FBCBB;padding:15px;color:#fff;border: unset;font-weight:bold">View Message</button></a></td>
+                              <td align="center" class="es-m-txt-l" style="padding:30px;Margin:0px;padding-bottom:20px"><a href="${process.env.APP_URL}/public/inbox/guide/${chatId}"><button style="background-color: #8FBCBB;padding:15px;color:#fff;border: unset;font-weight:bold">View Message</button></a></td>
                              </tr>
                            </table></td>
                          </tr>
@@ -222,4 +223,4 @@ const emailClientFromInbox = (email, chatId) => {
     })
 }
 
-module.exports = emailClientFromInbox;
+module.exports = emailGuideFromInbox;

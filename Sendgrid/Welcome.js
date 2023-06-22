@@ -5,10 +5,10 @@ const emailWelcome = (email, name) => {
 
   sgMail.setApiKey(process.env.SENDGRID_API_KEY)
   const msg = {
-    to: email, // Change to your recipient
-    from: {
-      email: 'tour-iceland@frantech.org.uk',
-      name: 'Tour Iceland'
+    to: email, // recipient email
+    from: { // sendgrid acts on behalf of app's domain
+      email: process.env.EMAIL_ADDRESS,
+      name: process.env.EMAIL_NAME
     },
     subject: 'Welcome to Tour Iceland',
     text: "Hello, a new account has been created for you. Please enable HTML.",
@@ -130,7 +130,7 @@ const emailWelcome = (email, name) => {
                           <td align="center" class="es-m-txt-c" style="padding:0;Margin:0;padding-top:15px;padding-bottom:15px"><h1 style="Margin:0;line-height:55px;mso-line-height-rule:exactly;font-family:arial, 'helvetica neue', helvetica, sans-serif;font-size:46px;font-style:normal;font-weight:bold;color:#333333">Thanks for joining us!</h1></td>
                          </tr>
                          <tr>
-                          <td align="left" style="padding:0;Margin:0;padding-top:10px;padding-bottom:10px"><p style="Margin:0;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-family:arial, 'helvetica neue', helvetica, sans-serif;line-height:24px;color:#333333;font-size:16px">Hi&nbsp;${name},<br/> <br/>Thanks for joining us! You&nbsp;now have an account with Tour Iceland. This means you'll be able to add and manage all of your tours, clients and reviews all in one place.<br><br>Visit <a href="https://tour-iceland.netlify.app/guides">Tour Iceland</a> to get started</p></td>
+                          <td align="left" style="padding:0;Margin:0;padding-top:10px;padding-bottom:10px"><p style="Margin:0;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-family:arial, 'helvetica neue', helvetica, sans-serif;line-height:24px;color:#333333;font-size:16px">Hi&nbsp;${name},<br/> <br/>Thanks for joining us! You&nbsp;now have an account with Tour Iceland. This means you'll be able to add and manage all of your tours, clients and reviews all in one place.<br><br>Visit <a href="${process.env.APP_URL}/guides">Tour Iceland</a> to get started</p></td>
                          </tr>
                        </table></td>
                      </tr>
@@ -259,7 +259,7 @@ const emailWelcome = (email, name) => {
                           <td style="padding:0;Margin:0">
                            <table cellpadding="0" cellspacing="0" width="100%" class="es-menu" role="presentation" style="mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px">
                              <tr class="links">
-                              <td align="center" valign="top" width="33.33%" style="Margin:0;padding-left:5px;padding-right:5px;padding-top:5px;padding-bottom:5px;border:0"><a target="_blank" href="https://tour-iceland.netlify.app" style="-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;text-decoration:none;display:block;font-family:arial, 'helvetica neue', helvetica, sans-serif;color:#999999;font-size:12px">Visit Us </a></td>
+                              <td align="center" valign="top" width="33.33%" style="Margin:0;padding-left:5px;padding-right:5px;padding-top:5px;padding-bottom:5px;border:0"><a target="_blank" href="${process.env.APP_URL}" style="-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;text-decoration:none;display:block;font-family:arial, 'helvetica neue', helvetica, sans-serif;color:#999999;font-size:12px">Visit Us </a></td>
                               <td align="center" valign="top" width="33.33%" style="Margin:0;padding-left:5px;padding-right:5px;padding-top:5px;padding-bottom:5px;border:0;border-left:1px solid #cccccc"><a target="_blank" href="/" style="-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;text-decoration:none;display:block;font-family:arial, 'helvetica neue', helvetica, sans-serif;color:#999999;font-size:12px">Privacy Policy</a></td>
                               <td align="center" valign="top" width="33.33%" style="Margin:0;padding-left:5px;padding-right:5px;padding-top:5px;padding-bottom:5px;border:0;border-left:1px solid #cccccc"><a target="_blank" href="/" style="-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;text-decoration:none;display:block;font-family:arial, 'helvetica neue', helvetica, sans-serif;color:#999999;font-size:12px">Terms of Use</a></td>
                              </tr>
@@ -306,7 +306,6 @@ const emailWelcome = (email, name) => {
     .catch((error) => {
       console.error(error)
     })
-
 }
 
 module.exports = emailWelcome;
