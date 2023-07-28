@@ -1,7 +1,7 @@
 const sgMail = require('@sendgrid/mail')
 require('dotenv').config()
 
-const emailNewRequest = (email, date, info, requestId) => {
+const emailClientBookingConfirmation = (email, date, type) => {
   sgMail.setApiKey(process.env.SENDGRID_API_KEY)
   const msg = {
     to: email, // recipient email
@@ -9,8 +9,8 @@ const emailNewRequest = (email, date, info, requestId) => {
       email: process.env.EMAIL_ADDRESS,
       name: process.env.EMAIL_NAME
     },
-    subject: 'Tour Iceland | New Tour Request!',
-    text: "Hello, you have a new tour request. Please enable HTML.",
+    subject: 'Tour Iceland | Booking Confirmation!',
+    text: "Hello, your quote has been accepted and paid. You have a new booking! Please enable HTML.",
     html: `<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
     <html xmlns="http://www.w3.org/1999/xhtml" xmlns:o="urn:schemas-microsoft-com:office:office" style="font-family:arial, 'helvetica neue', helvetica, sans-serif">
      <head>
@@ -19,7 +19,7 @@ const emailNewRequest = (email, date, info, requestId) => {
       <meta name="x-apple-disable-message-reformatting">
       <meta http-equiv="X-UA-Compatible" content="IE=edge">
       <meta content="telephone=no" name="format-detection">
-      <title>New Request</title><!--[if (mso 16)]>
+      <title>New Booking</title><!--[if (mso 16)]>
         <style type="text/css">
         a {text-decoration: none;}
         </style>
@@ -103,7 +103,7 @@ const emailNewRequest = (email, date, info, requestId) => {
                       <td align="center" valign="top" style="padding:0;Margin:0;width:560px">
                        <table cellpadding="0" cellspacing="0" width="100%" role="presentation" style="mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px">
                          <tr>
-                          <td align="center" class="es-m-txt-c" style="padding:0;Margin:0;padding-bottom:5px;padding-top:20px"><h1 style="Margin:0;line-height:55px;mso-line-height-rule:exactly;font-family:arial, 'helvetica neue', helvetica, sans-serif;font-size:46px;font-style:normal;font-weight:bold;color:#333333">New Tour Request</h1></td>
+                          <td align="center" class="es-m-txt-c" style="padding:0;Margin:0;padding-bottom:5px;padding-top:20px"><h1 style="Margin:0;line-height:55px;mso-line-height-rule:exactly;font-family:arial, 'helvetica neue', helvetica, sans-serif;font-size:46px;font-style:normal;font-weight:bold;color:#333333">New Tour Booking</h1></td>
                          </tr>
                          <tr>
                           <td align="center" style="padding:0;Margin:0;padding-top:10px;padding-bottom:10px;font-size:0px"><img class="adapt-img" src="https://firebasestorage.googleapis.com/v0/b/musicgoferproductionadmin.appspot.com/o/illustration_6.png?alt=media&token=2d344486-0faf-4196-a33c-881eb88b82af" alt style="display:block;border:0;outline:none;text-decoration:none;-ms-interpolation-mode:bicubic" width="300" height="300"></td>
@@ -164,7 +164,7 @@ const emailNewRequest = (email, date, info, requestId) => {
                           <td align="left" style="padding:0;Margin:0;width:501px">
                            <table cellpadding="0" cellspacing="0" width="100%" role="presentation" style="mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px">
                              <tr>
-                              <td align="left" class="es-m-txt-l" style="padding:0;Margin:0;padding-bottom:5px"><h3 style="Margin:0;line-height:24px;mso-line-height-rule:exactly;font-family:arial, 'helvetica neue', helvetica, sans-serif;font-size:20px;font-style:normal;font-weight:bold;color:#333333">${info.tourType}</h3></td>
+                              <td align="left" class="es-m-txt-l" style="padding:0;Margin:0;padding-bottom:5px"><h3 style="Margin:0;line-height:24px;mso-line-height-rule:exactly;font-family:arial, 'helvetica neue', helvetica, sans-serif;font-size:20px;font-style:normal;font-weight:bold;color:#333333">${type}</h3></td>
                              </tr>
                            </table></td>
                          </tr>
@@ -194,10 +194,7 @@ const emailNewRequest = (email, date, info, requestId) => {
                           <td align="left" style="padding:0;Margin:0;width:501px">
                            <table cellpadding="0" cellspacing="0" width="100%" role="presentation" style="mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px">
                              <tr>
-                              <td align="left" class="es-m-txt-l" style="padding:0;Margin:0;padding-bottom:5px"><h3 style="Margin:0;line-height:24px;mso-line-height-rule:exactly;font-family:arial, 'helvetica neue', helvetica, sans-serif;font-size:20px;font-style:normal;font-weight:bold;color:#333333">${info.groupSize}</h3></td>
-                             </tr>
-                             <tr>
-                              <td align="center" class="es-m-txt-l" style="padding:30px;Margin:0px;padding-bottom:5px"><a href="${process.env.APP_URL}/guides/requests/${requestId}"><button style="background-color: #8FBCBB;padding:15px;color:#fff;border: unset;font-weight:bold">View Request</button></a></td>
+                              <td align="center" class="es-m-txt-l" style="padding:30px;Margin:0px;padding-bottom:5px"><a href="${process.env.APP_URL}/Quotes"><button style="background-color: #8FBCBB;padding:15px;color:#fff;border: unset;font-weight:bold">View Booking</button></a></td>
                              </tr>
                            </table></td>
                          </tr>
@@ -446,4 +443,4 @@ const emailNewRequest = (email, date, info, requestId) => {
     })
 }
 
-module.exports = emailNewRequest;
+module.exports = emailClientBookingConfirmation;
