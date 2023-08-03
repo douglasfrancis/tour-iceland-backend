@@ -10,7 +10,9 @@ const requestSchema = new mongoose.Schema({
     currency: String,
     backgroundColor: String,
     borderColor: String,
-    textColor: String
+    textColor: String,
+    guideId: String,
+    quoteId: String
   });
 
 const Request = mongoose.model('Request', requestSchema);
