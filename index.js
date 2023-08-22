@@ -196,6 +196,16 @@ app.post('/get-quote-by-id', async (req, res ) => {
   }
 })
 
+app.post('/get-quotes-for-guide', async (req, res) => {
+  try {
+    const { guideId } = req.params;
+    let quotes = await Quote.find(guideId)
+    res.send(quotes)
+  } catch (error) {
+    res.status(400).send(error)
+  }
+})
+
 app.post('/get-guide-quote-for-request', async (req, res) => {
   try {
     let {guideId, requestId} = req.body;
