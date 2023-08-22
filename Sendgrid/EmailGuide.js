@@ -6,7 +6,7 @@ const emailGuideFromInbox = (email, chatId) => {
   
   const msg = {
     to: email, // recipient email
-    from: { // sendgrid acts on behalf of app's domain
+    from: {    // sendgrid acts on behalf of app's domain
       email: process.env.EMAIL_ADDRESS,
       name: process.env.EMAIL_NAME
     },
@@ -93,6 +93,7 @@ const emailGuideFromInbox = (email, chatId) => {
                </table></td>
              </tr>
            </table>
+
            <table cellpadding="0" cellspacing="0" class="es-content" align="center" style="mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;table-layout:fixed !important;width:100%">
              <tr>
               <td align="center" style="padding:0;Margin:0">
@@ -120,7 +121,6 @@ const emailGuideFromInbox = (email, chatId) => {
                       <td class="esdev-mso-td" valign="top" style="padding:0;Margin:0">
                        <table cellpadding="0" cellspacing="0" class="es-left" align="left" style="mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;float:left">
                          <tr>
-                       
                          </tr>
                        </table></td>
                       <td style="padding:0;Margin:0;width:10px"></td>
@@ -138,19 +138,16 @@ const emailGuideFromInbox = (email, chatId) => {
                      </tr>
                    </table></td>
                  </tr>
-               
                  <tr>
                   <td class="esdev-adapt-off" align="left" style="Margin:0;padding-bottom:5px;padding-top:10px;padding-left:20px;padding-right:20px">
                    <table cellpadding="0" cellspacing="0" class="esdev-mso-table" style="mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;width:560px">
                      <tr>
-                     
                       <td style="padding:0;Margin:0;width:10px"></td>
                       <td class="esdev-mso-td" valign="top" style="padding:0;Margin:0">
                        <table cellpadding="0" cellspacing="0" class="es-right" align="right" style="mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;float:right">
                          <tr>
                           <td align="left" style="padding:0;Margin:0;width:501px">
                            <table cellpadding="0" cellspacing="0" width="100%" role="presentation" style="mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px">
-                            
                              <tr>
                               <td align="center" class="es-m-txt-l" style="padding:30px;Margin:0px;padding-bottom:20px"><a href="${process.env.APP_URL}/public/inbox/guide/${chatId}"><button style="background-color: #8FBCBB;padding:15px;color:#fff;border: unset;font-weight:bold">View Message</button></a></td>
                              </tr>
@@ -163,10 +160,7 @@ const emailGuideFromInbox = (email, chatId) => {
                </table></td>
              </tr>
            </table>
-          
-               
-               
-          
+
            <table cellpadding="0" cellspacing="0" class="es-footer" align="center" style="mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;table-layout:fixed !important;width:100%;background-color:transparent;background-repeat:repeat;background-position:center top">
              <tr>
               <td align="center" style="padding:0;Margin:0">

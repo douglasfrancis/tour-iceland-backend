@@ -75,7 +75,7 @@ app.post('/update-guide-personal', async (req, res)=>{
   }
 })
 
-  
+
 // Bookings
 app.post('/create-new-booking', async (req, res) => {
   try {
@@ -107,7 +107,8 @@ app.post('/get-bookings-by-id', async (req, res)=>{
   }
 })
 
-//Requests
+
+// Requests
 app.post('/create-new-request', async (req, res)=>{
   try {
     let {date, info} = req.body;
@@ -150,21 +151,44 @@ app.post('/get-request-by-id', async (req, res)=>{
   }
 })
 
-// quotes
+app.put('/update-request', async (req, res) => {
+  try {
+    const updatedRequest = await Request.findByIdAndUpdate(req.body.updatedRequest._id, req.body.updatedRequest, {
+      new: true
+    });
+
+    // request should exist, report if not
+    if (!updatedRequest) {
+      return res.status(404).json({ error: 'Request not found' });
+    }
+
+    // Return the updated request as the response
+    console.log("Request data updated to " + JSON.stringify(updatedRequest))
+    res.json(updatedRequest);
+  } catch (error) {
+    console.error("Error while updating request " + JSON.stringify(error));
+    res.status(500).json({ error: 'An error occurred during the request update' });
+  }
+})
+
+
+// Quotes
 app.put('/update-quote/:id', async (req, res) => {
+  console.log("Update quote")
   const { id } = req.params;
   const { updatedQuote } = req.body;
   try {
     const updatedData = await Quote.findByIdAndUpdate(id, updatedQuote, { new: false });
     res.json(updatedData);
   } catch (error) {
+    console.log("Error updating quote " + JSON.stringify(error))
     res.status(500).json({ error: 'Failed to update quote' });
   }
 });
 
-app.get('/get-quote-by-id/:id', async (req, res)=>{
+app.post('/get-quote-by-id', async (req, res ) => {
   try {
-    const { id } = req.params;
+    const { id } = req.body;
     let quote = await Quote.findById(id)
     res.send(quote)
   } catch (error) {
@@ -182,7 +206,7 @@ app.post('/get-quotes-for-guide', async (req, res) => {
   }
 })
 
-app.post('/get-guide-quote-for-request', async (req, res)=>{
+app.post('/get-guide-quote-for-request', async (req, res) => {
   try {
     let {guideId, requestId} = req.body;
     let quote = await Quote.findOne({guideId, requestId})
@@ -193,17 +217,19 @@ app.post('/get-guide-quote-for-request', async (req, res)=>{
 })
 
 app.post('/send-booking-confirmations', async (req, res) => {
+  console.log("Send booking confirmations")
   try {
     let {request, guide} = req.body;
+    console.log("Emailing client " + request.email)
     emailClientBookingConfirmation(request.email, request.date, request.info.tourType)
+    console.log("Emailing guide " + guide.email)
     emailGuideBookingConfirmation(guide.email, request.date, request.info.tourType)
-    res.send('Successfully created')
+    res.send('Successfully sent email confirmations to client and guide')
   } catch(error) {
     console.log(error)
     res.status(400).send(error)
   }
 })
-
 
 app.post('/send-initial-quote', async (req, res)=>{
   try {
@@ -212,7 +238,7 @@ app.post('/send-initial-quote', async (req, res)=>{
     try {
       const options = {
         upsert: true, // Create a new document if it doesn't exist
-        new: true // Return the updated or newly created document
+        new: true     // Return the updated or newly created document
       };
 
       // create a new quote when there's none already, otherwise amend existing
@@ -282,7 +308,48 @@ app.post('/get-chat-by-id', async (req, res)=>{
   }
 })
 
-//Messages
+// Find all chats for the given request
+// For any given guide there should be no more than one thread
+// If there's none for a guide then he's never provided a quote so ignore him
+// Otherwise append a message, from the system, on behalf of the client
+app.post('/notify-quoting-guides', async (req, res) => {
+  let {requestId, guideId} = req.body;
+
+  try {
+    let chats = await Chat.find({ requestId: requestId })
+
+    let msgText
+    chats.forEach(async (chat) => {
+      if (chat.guideId !== guideId) {
+        msgText =
+          "This is an automated response on behalf of the client. " +
+          "The request has now been fulfilled by another guide. " +
+          "Thank you."
+      } else {
+        msgText =
+        "This is an automated response on behalf of the client. " +
+        "Your quote has been accepted and paid. " +
+        "Thank you."
+      }
+
+      let message = new Message({
+        chatId: chat._id,
+        message: msgText,
+        guideId,
+        read: true,
+        timeStamp: new Date(),
+        sentBy: 'Client'
+      })
+      await message.save()
+    })
+  } catch (error) {
+    console.log(`Error notifying guide: ${error}`)
+    res.status(400).send(error)
+  }
+})
+
+
+// Messages
 app.post('/get-unread-msgs', async (req, res)=>{
   try {
     let {id} = req.body;
@@ -340,29 +407,31 @@ app.post('/send-client-message', async (req, res)=>{
 })
 
 
+// payments
+app.post("/create-checkout-session", async (req, res) => {
+  const { product } = req.body;
+  console.log("Create checkout session " + JSON.stringify(product))
 
-app.post("/create-checkout-session", async (req, res) => { 
-  const { product } = req.body; 
-  const session = await stripe.checkout.sessions.create({ 
-    payment_method_types: ["card"], 
-    line_items: [ 
-      { 
-        price_data: { 
-          currency: product.currency, 
-          product_data: { 
-            name: product.name, 
-          }, 
-          unit_amount: product.price * 100, 
-        }, 
-        quantity: product.quantity, 
-      }, 
-    ], 
-    mode: "payment", 
-    success_url: "http://localhost:3000/payments/success/" + product.quoteId, 
+  const session = await stripe.checkout.sessions.create({
+    payment_method_types: ["card"],
+    line_items: [
+      {
+        price_data: {
+          currency: product.currency,
+          product_data: {
+            name: product.name,
+          },
+          unit_amount: Math.round(product.price * 100),
+        },
+        quantity: product.quantity,
+      },
+    ],
+    mode: "payment",
+    success_url: "http://localhost:3000/payments/success/" + product.quoteId,
     cancel_url: "http://localhost:3000/payments/cancel"
   });
-  res.json({ id: session.id }); 
-}); 
+  res.json({ id: session.id });
+});
 
 
 async function main() {
